@@ -20,13 +20,14 @@ class userReg(generics.GenericAPIView):
                 password = user['password']
                 if userData.objects.filter(username = username).exists() or userData.objects.filter(email=email).exists() :
                     context = {
-                    'message':'username or already exists'
+                    'message':'username or email already exists'
                     }
                     return Response(context,status=status.HTTP_201_CREATED)
                 else:
                     userData.objects.create_user(username, email,password)
+                    userData.save
                     context = {
-                    'message':'username or email already exists'
+                    'message':'username registered successfully'
                     }
                     return Response(context,status=status.HTTP_201_CREATED)
             except Exception as e:
@@ -56,6 +57,6 @@ class username_change(generics.GenericAPIView):
             return Response(context,status=status.HTTP_201_CREATED )
         else:
             context = {
-                'message': "user not authenticated"
+                'message': "username or password invalid"
             }
             return Response(context,status=status.HTTP_201_CREATED )
