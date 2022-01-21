@@ -5,13 +5,14 @@ from .models import userData
 from rest_framework import generics, status
 from rest_framework.response import Response
 from django.contrib.auth import authenticate
-
-# Create your views here.
+from rest_framework.permissions import IsAuthenticated
+# Create your views ere.
 
 
 class userReg(generics.GenericAPIView):
     serializer_class = dataSerializer
     queryset = userData.objects.all()
+    permission_classes = (IsAuthenticated,)
     def post(self, request):
             try:
                 user =request.data
@@ -38,6 +39,7 @@ class userReg(generics.GenericAPIView):
 
 class username_change(generics.GenericAPIView):
     serializer_class = userdataSerializer
+    permission_classes = (IsAuthenticated,)
     def post(self, request):
         user = request.data
         username = user['username']

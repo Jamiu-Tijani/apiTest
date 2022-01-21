@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
+from datetime import timedelta
 import os
 from pathlib import Path
 
@@ -72,6 +73,16 @@ TEMPLATES = [
     },
 ]
 
+REST_FRAMEWORK = {
+
+    'DEFAULT_PARSER_CLASSES': ['rest_framework.parsers.JSONParser'],
+    'DEFAULT_SCHEMA_CLASS':'rest_framework.schemas.coreapi.AutoSchema',
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        
+    )
+}
 WSGI_APPLICATION = 'apiTest.wsgi.application'
 
 
@@ -128,39 +139,21 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "staticfiles") ]
 
 SWAGGER_SETTINGS = {
-    'exclude_url_names': [],
-    'exclude_namespaces': [],
-    'api_version': '0.1',
-    'api_path': '/',
-    'relative_paths': False,
-    'enabled_methods': [
-        'get',
-        'post',
-        'put',
-        'patch',
-        'delete'
-    ],
-    'api_key': '',
-    'is_authenticated': False,
-    'is_superuser': False,
-    'unauthenticated_user': 'django.contrib.auth.models.AnonymousUser',
-    'permission_denied_handler': None,
-    'resource_access_handler': None,
-    'base_path':'helloreverb.com/docs',
-    'info': {
-        'contact': 'apiteam@wordnik.com',
-        'description': 'This is a sample server Petstore server. '
-                       'You can find out more about Swagger at '
-                       '<a href="http://swagger.wordnik.com">'
-                       'http://swagger.wordnik.com</a> '
-                       'or on irc.freenode.net, #swagger. '
-                       'For this sample, you can use the api key '
-                       '"special-key" to test '
-                       'the authorization filters',
-        'license': 'Apache 2.0',
-        'licenseUrl': 'http://www.apache.org/licenses/LICENSE-2.0.html',
-        'termsOfServiceUrl': 'http://helloreverb.com/terms/',
-        'title': 'Swagger Sample App',
-    },
-    'doc_expansion': 'none',
+   'SECURITY_DEFINITIONS': {
+      'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header',
+            'scheme': 'bearer',
+            'bearerFormat' : 'jwt'
+      }
+   },
+   'USE_SESSION_AUTH': False
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=15),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
 }
